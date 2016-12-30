@@ -5,6 +5,38 @@ import json
 import collections
 import sys
 
+
+def create_clustered_pop(meanval, sigmaval, pop):
+	#meanval and sigmaval are the mean and standard deviations of n bivariate normal clusters.
+	#pop is the number of individuals per cluster
+	if len(meanval) != len(sigmaval):
+		print 'Dimensionality of mean vector is not consistent with that of the standard deviation matrix'
+		return 0
+	xvals = []
+	yvals = []
+	num_clusters = len(meanval)
+	for i in range(num_clusters):
+		x_pos, y_pos = np.random.multivariate_normal(meanval[i], sigmaval[i], pop).T
+		xvals.append(x_pos)
+		yvals.append(y_pos)
+	x_flat = [x for sublist in xvals for x in sublist]
+	x_pos = np.asarray(x_flat)
+	y_flat = [y for sublist in yvals for y in sublist]
+	y_pos = np.asarray(y_flat)
+	
+	dist_mat = np.asarray(zip(x_pos, y_pos))
+	pdistance = scipy.spatial.distance.pdist(dist_mat)
+	full_mat = scipy.spatial.distance.squareform(pdistance)
+
+	#Save the population
+	with open('29Dec_clustered_population.txt', 'w') as f:
+		xyarray = np.array([x_pos, y_pos])
+		xyarray = xyarray.T
+		np.savetxt(f, xyarray, fmt=['%f', '%f'])
+	return full_mat
+	
+		
+
 def create_pop(meanval, sigmaval, pop):
 	x_pos, y_pos = np.random.multivariate_normal(meanval, sigmaval, pop).T
 	dist_mat = np.asarray(zip(x_pos, y_pos))
@@ -132,8 +164,16 @@ def inf_per_count_time(infectious):
 
 #if __name__ == '__main__':
 #
-#    #Uncomment this to read in the population instead of creating one
-#    with open('23Dec_population.txt', 'r') as f:
+#    pop = 10
+#    meanval = [[1., 1.], [2., 2.]]
+#    print len(meanval)
+#    sigmaval = [[[1., 0.], [0., 1.]], [[1., 0.],[0.,1.]]]
+#    print len(sigmaval)
+#    d1 = create_clustered_pop(meanval, sigmaval, pop)
+#    #print d1
+
+    #Uncomment this to read in the population instead of creating one
+    #with open('23Dec_population.txt', 'r') as f:
 #           xy = np.loadtxt(f)
 #    #print 'x, y', xy[0:pop]
 #    x_pos = [item[0] for item in xy]
