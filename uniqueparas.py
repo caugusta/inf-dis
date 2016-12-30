@@ -10,4 +10,8 @@ for line in open('parameters_neighbourhood_Dec29.txt', "r"):
     if line not in lines_seen: # not a duplicate
         outfile.write(line)
         lines_seen.add(line)
+for line in open('parameters_neighbourhood_Dec29_redo.txt', 'r'):
+    if line not in lines_seen: # not a duplicate
+        outfile.write(line)
+        lines_seen.add(line)
 outfile.close()

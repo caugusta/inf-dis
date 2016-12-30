@@ -20,11 +20,11 @@ def write_neighbourhood_epidemics_redo(susc, trans, inf_period, eps, repetitions
         while True:
                 if trans < 50:
                         for rep in range(repetitions):
-                                print 'neigh', trans, inf_period, eps, rep, count
+                                print 'neigh', trans, infectious_period, epsilon, rep, count
                                 for _ in range(MAX_FAILED_ATTEMPS):
                                     g1 = neigh_epidemic(
                                         pop, susc, trans,
-                                        inf_period, eps, full_mat)
+                                        infectious_period, epsilon, full_mat)
 
                                     if len(g1) >= 10 and max(g1.values()) >= 10:
                                         g2 = inf_per_count_time(g1)
@@ -33,8 +33,8 @@ def write_neighbourhood_epidemics_redo(susc, trans, inf_period, eps, repetitions
                                         count_list.append(g2)
                                         new_susc.append(susc)
                                         new_trans.append(trans)
-                                        new_inf_period.append(inf_period)
-                                        new_eps.append(eps)
+                                        new_inf_period.append(infectious_period)
+                                        new_eps.append(epsilon)
                                         break
                                 else:
                                     transmissibility += 1
@@ -260,23 +260,23 @@ if __name__ == "__main__":
     eps = [0., 0.01, 0.02, 0.05] #was 0, 0.01, 0.02, 0.05
     mean_val = np.array([[1., 1.], [5., 5.], [2., 2.]])
     sigma_val = np.array([[[1., 0.], [0., 1.]], [[1., 0.], [0., 1.]], [[1., 0.], [0., 1.]]])
-    full_mat = create_clustered_pop(mean_val, sigma_val, pop)
+#    full_mat = create_clustered_pop(mean_val, sigma_val, pop)
     reps = 400
     #neigh_eps = [0.1, 0.2, 0.5, 0.7] 
 
     #Uncomment this to read in the population instead of creating one
-    #with open('29Dec_clustered_population.txt', 'r') as f:
-    #       xy = np.loadtxt(f)
-    ##print 'x, y', xy[0:pop]
-    #x_pos = [item[0] for item in xy]
-    #y_pos = [item[1] for item in xy]
-    #dist_mat = np.asarray(zip(x_pos, y_pos))
-    #pdistance = scipy.spatial.distance.pdist(dist_mat)
-    #full_mat = scipy.spatial.distance.squareform(pdistance)
+    with open('29Dec_clustered_population.txt', 'r') as f:
+           xy = np.loadtxt(f)
+    #print 'x, y', xy[0:pop]
+    x_pos = [item[0] for item in xy]
+    y_pos = [item[1] for item in xy]
+    dist_mat = np.asarray(zip(x_pos, y_pos))
+    pdistance = scipy.spatial.distance.pdist(dist_mat)
+    full_mat = scipy.spatial.distance.squareform(pdistance)
 
-    #redo_trans = 0.5
+    redo_trans = 0.5
 
-    write_powerlaw_epidemics(susc, powerlaw_trans, inf_period, eps, reps, pop)
-    write_exponential_epidemics(susc, exp_trans, inf_period, eps, reps, pop)
-    write_neighbourhood_epidemics(susc, neigh_trans, inf_period, neigh_eps, reps, pop) 
-    #write_neighbourhood_epidemics_redo(susc, redo_trans, inf_period, eps, reps, pop)
+    #write_powerlaw_epidemics(susc, powerlaw_trans, inf_period, eps, reps, pop)
+    #write_exponential_epidemics(susc, exp_trans, inf_period, eps, reps, pop)
+    #write_neighbourhood_epidemics(susc, neigh_trans, inf_period, eps, reps, pop) 
+    write_neighbourhood_epidemics_redo(susc, redo_trans, inf_period, eps, reps, pop)
